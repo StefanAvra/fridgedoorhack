@@ -1,7 +1,9 @@
 import time
 from machine import Pin
+import os
 
 BUTTON_PIN = 14
+BUZZER_PIN = 12
 BLINK = False
 ENABLE_LOG = False
 
@@ -9,7 +11,9 @@ led = Pin(2, Pin.OUT)  # on-board LED
 button = Pin(BUTTON_PIN, Pin.IN, Pin.PULL_UP)
 
 if ENABLE_LOG:
-    log = open("door.log", "w")
+    if 'logs' not in os.listdir():
+        os.mkdir('logs')
+    log = open('logs/door.log', 'a')  # has to be closed somewhere (and re-opened, so it should be moved to main())
 
 
 def is_door_open():
