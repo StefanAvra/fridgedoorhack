@@ -64,12 +64,14 @@ def main():
 
 async def door_opened():
     # play opening sound
+    led.off()
     await uasyncio.sleep(LEGIT_OPEN_TIME)
-    # start 'forgot to close'-code
+    # start 'forgot to close'-code if still open
 
 
 async def door_closed():
     # play closing sound
+    led.on()
     # do logging
     pass
 
@@ -83,4 +85,4 @@ def main2():
 
 
 if __name__ == '__main__':
-    main()
+    main2()
