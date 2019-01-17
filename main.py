@@ -3,7 +3,6 @@ from machine import Pin
 import os
 import uasyncio
 import set_time
-from aswitch import Switch
 
 BUTTON_PIN = 14
 BUZZER_PIN = 12
@@ -16,7 +15,6 @@ door_open = False
 led = Pin(2, Pin.OUT)  # on-board LED
 pin = Pin(BUTTON_PIN, Pin.IN, Pin.PULL_UP)
 
-switch = Switch(pin)
 
 if ENABLE_LOG:
     if 'logs' not in os.listdir():
@@ -34,10 +32,6 @@ def is_door_open():
             door_open = True
 
     return door_open
-
-
-def play_melody():
-    pass
 
 
 def main():
@@ -62,6 +56,10 @@ def main():
                 pass
 
 
+async def play_melody():
+    pass
+
+
 async def door_opened():
     # play opening sound
     led.off()
@@ -70,17 +68,29 @@ async def door_opened():
 
 
 async def door_closed():
+    # todo: cancel door_opened
     # play closing sound
     led.on()
     # do logging
-    pass
+
+
+async def check_door():
+    global door_open
+    while True:
+        if not pin.value() == door_open:
+            await uasyncio.sleep_ms(100)  # debouncing
+            if not pin.value() == door_open:
+                door_open = pin.value()
+                if door_open:
+                    await door_opened()
+                else:
+                    await door_closed()
 
 
 def main2():
-    switch.close_func(door_closed())
-    switch.open_func(door_opened())
     loop = uasyncio.get_event_loop()
     loop.create_task(set_time.keep_time_synced())
+    loop.create_task(check_door())
     loop.run_forever()
 
 
