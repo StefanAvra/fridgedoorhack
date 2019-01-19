@@ -7,7 +7,7 @@ import set_time
 BUTTON_PIN = 14
 BUZZER_PIN = 12
 BLINK = False
-ENABLE_LOG = False
+ENABLE_LOG = True
 LEGIT_OPEN_TIME = 10  # how many seconds it is ok to keep the fridge open
 
 opened_counter = 0
@@ -22,7 +22,14 @@ pin = Pin(BUTTON_PIN, Pin.IN, Pin.PULL_UP)
 if ENABLE_LOG:
     if 'logs' not in os.listdir():
         os.mkdir('logs')
-    log = open('logs/door.log', 'a')  # todo: has to be closed and re-opened. make async
+        log = open('logs/door.log', 'w')
+        log.write('action;time')
+        log.close()
+
+    async def log_door(action, time):
+        log = open('logs/door.log', 'a')
+        log.write(action + ';' + str("{:04d}-{:02d}-{:02d}T{:02d}:{:02d}:{:02d}".format(*time)) + '\n')
+        log.close()
 
 
 async def play_melody():
@@ -36,6 +43,8 @@ async def door_opened():
     opened_counter += 1
     # play opening sound
     print('door opened')
+    if ENABLE_LOG:
+        loop.create_task(log_door('opened', utime.localtime()))
     led.off()
     await uasyncio.sleep(LEGIT_OPEN_TIME)
     # start 'forgot to close'-code if still open
@@ -48,6 +57,8 @@ async def door_closed():
     is_open -= 1
     print('door closed')
     # play closing sound
+    if ENABLE_LOG:
+        loop.create_task(log_door('closed', utime.localtime()))
     led.on()
     # do logging
 
@@ -65,10 +76,8 @@ async def check_door():
                 door_open = pin.value()
                 if door_open:
                     loop.create_task(door_opened())
-                    # await door_opened()
                 else:
                     loop.create_task(door_closed())
-                    # await door_closed()
 
 
 def main():
