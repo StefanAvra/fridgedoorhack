@@ -2,6 +2,7 @@ from rtttl import RTTTL
 import songs
 import utime
 import uasyncio
+import door_state
 
 from machine import Pin, PWM
 
@@ -22,4 +23,6 @@ async def play_song(song):
     tune = RTTTL(songs.find(song))
     for freq, msec in tune.notes():
         await play_tone(freq, msec)
+        if not door_state.is_open:
+            return
 
