@@ -8,9 +8,11 @@ BUTTON_PIN = 14
 BUZZER_PIN = 12
 BLINK = False
 ENABLE_LOG = False
-LEGIT_OPEN_TIME = 90  # how many seconds it is ok to keep the fridge open
+LEGIT_OPEN_TIME = 10  # how many seconds it is ok to keep the fridge open
 
+opened_counter = 0
 door_open = False
+loop = uasyncio.get_event_loop()
 
 led = Pin(2, Pin.OUT)  # on-board LED
 pin = Pin(BUTTON_PIN, Pin.IN, Pin.PULL_UP)
@@ -22,77 +24,54 @@ if ENABLE_LOG:
     log = open('logs/door.log', 'a')  # todo: has to be closed and re-opened. make async
 
 
-def is_door_open():
-    global door_open
-    if not pin.value():
-        door_open = False
-    else:
-        utime.sleep_ms(300)  # debouncing
-        if pin.value():
-            door_open = True
-
-    return door_open
-
-
-def main():
-    done = False
-    while not done:
-        if is_door_open():
-            led.off()  # weird, on/off is swapped
-            if BLINK:
-                utime.sleep_ms(50)
-                led.on()
-
-            if ENABLE_LOG:
-                log.write("door opened")
-
-            utime.sleep(2)
-        else:
-            led.on()
-            if ENABLE_LOG:
-                log.write('door closed')
-            utime.sleep_ms(100)
-            while not pin.value():
-                pass
-
-
 async def play_melody():
     pass
 
 
 async def door_opened():
     # play opening sound
+    print('door opened')
+    global opened_counter
+    opened_counter += 1
     led.off()
     await uasyncio.sleep(LEGIT_OPEN_TIME)
+    print('close the door!!111')
     # start 'forgot to close'-code if still open
 
 
 async def door_closed():
     # todo: cancel door_opened
     # play closing sound
+    print('door closed')
     led.on()
     # do logging
 
 
 async def check_door():
     global door_open
+    global opened_counter
+    global loop
     while True:
+        print('checking door', str(opened_counter))
+        await uasyncio.sleep_ms(100)
         if not pin.value() == door_open:
             await uasyncio.sleep_ms(100)  # debouncing
             if not pin.value() == door_open:
                 door_open = pin.value()
                 if door_open:
-                    await door_opened()
+                    loop.create_task(door_opened())
+                    # await door_opened()
                 else:
-                    await door_closed()
+                    loop.create_task(door_closed())
+                    # await door_closed()
 
 
-def main2():
-    loop = uasyncio.get_event_loop()
+def main():
+    global loop
     loop.create_task(set_time.keep_time_synced())
     loop.create_task(check_door())
     loop.run_forever()
 
 
 if __name__ == '__main__':
-    main2()
+    main()

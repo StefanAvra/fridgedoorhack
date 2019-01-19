@@ -11,5 +11,5 @@ async def keep_time_synced():
     # Due to limitations of the ESP8266 chip the internal real-time clock (RTC) will overflow every 7:45h.
     while True:
         ntptime.settime()
-        print(utime.localtime())
+        # print(utime.localtime())
         await uasyncio.sleep(3600)
