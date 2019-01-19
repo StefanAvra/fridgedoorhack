@@ -41,6 +41,7 @@ async def door_opened():
     global is_open
     is_open += 1
     opened_counter += 1
+    token = opened_counter
     # play opening sound
     print('door opened')
     if ENABLE_LOG:
@@ -48,7 +49,7 @@ async def door_opened():
     led.off()
     await uasyncio.sleep(LEGIT_OPEN_TIME)
     # start 'forgot to close'-code if still open
-    if is_open > 0:
+    if is_open > 0 and token == opened_counter:
         print('close the door!!111')
 
 
@@ -68,7 +69,7 @@ async def check_door():
     global opened_counter
     global loop
     while True:
-        print('checking door', str(opened_counter))
+        print('Checking door...\nDoor has been opened %d times since last reset.' % opened_counter)
         await uasyncio.sleep_ms(100)
         if not pin.value() == door_open:
             await uasyncio.sleep_ms(100)  # debouncing
