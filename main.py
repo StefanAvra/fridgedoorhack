@@ -3,10 +3,10 @@ from machine import Pin
 import os
 import uasyncio
 import set_time
+import buzzer_music
 
 BUTTON_PIN = 14
 BUZZER_PIN = 12
-BLINK = False
 ENABLE_LOG = True
 LEGIT_OPEN_TIME = 10  # how many seconds it is ok to keep the fridge open
 
@@ -32,8 +32,8 @@ if ENABLE_LOG:
         log.close()
 
 
-async def play_melody():
-    pass
+async def play_melody(song_name):
+    await buzzer_music.play_song(song_name)
 
 
 async def door_opened():
@@ -51,6 +51,7 @@ async def door_opened():
     # start 'forgot to close'-code if still open
     if is_open > 0 and token == opened_counter:
         print('close the door!!111')
+        loop.create_task(play_melody('TopGun'))
 
 
 async def door_closed():
@@ -69,7 +70,7 @@ async def check_door():
     global opened_counter
     global loop
     while True:
-        print('Checking door...\nDoor has been opened %d times since last reset.' % opened_counter)
+        print('Door has been opened {} times since last reset.\nChecking door...'.format(opened_counter))
         await uasyncio.sleep_ms(100)
         if not pin.value() == door_open:
             await uasyncio.sleep_ms(100)  # debouncing
