@@ -3,10 +3,11 @@ import songs
 import utime
 import uasyncio
 import door_state
+import config
 
 from machine import Pin, PWM
 
-buz_tim = PWM(Pin(12))
+buz_tim = PWM(Pin(config.BUZZER_PIN))
 
 
 async def play_tone(freq, msec):

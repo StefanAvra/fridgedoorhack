@@ -5,12 +5,8 @@ import uasyncio
 import set_time
 import door_state
 import buzzer_music
+import config
 
-
-BUTTON_PIN = 14
-BUZZER_PIN = 12
-ENABLE_LOG = True
-LEGIT_OPEN_TIME = 10  # how many seconds it is ok to keep the fridge open
 
 opened_counter = 0
 door_state.is_open = 0
@@ -18,10 +14,10 @@ door_open = False
 loop = uasyncio.get_event_loop()
 
 led = Pin(2, Pin.OUT)  # on-board LED
-pin = Pin(BUTTON_PIN, Pin.IN, Pin.PULL_UP)
+pin = Pin(config.BUTTON_PIN, Pin.IN, Pin.PULL_UP)
 
 
-if ENABLE_LOG:
+if config.ENABLE_LOG:
     if 'logs' not in os.listdir():
         os.mkdir('logs')
         log = open('logs/door.log', 'w')
@@ -45,10 +41,10 @@ async def door_opened():
     token = opened_counter
     # play opening sound
     print('door opened')
-    if ENABLE_LOG:
+    if config.ENABLE_LOG:
         loop.create_task(log_door('opened', utime.localtime()))
     led.off()
-    await uasyncio.sleep(LEGIT_OPEN_TIME)
+    await uasyncio.sleep(config.LEGIT_OPEN_TIME)
     # start 'forgot to close'-code if still open
     if door_state.is_open > 0 and token == opened_counter:
         print('close the door!!111')
@@ -62,7 +58,7 @@ async def door_closed():
     door_state.is_open -= 1
     print('door closed')
     # play closing sound
-    if ENABLE_LOG:
+    if config.ENABLE_LOG:
         loop.create_task(log_door('closed', utime.localtime()))
     led.on()
     # do logging
