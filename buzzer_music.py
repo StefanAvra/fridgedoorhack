@@ -27,3 +27,7 @@ async def play_song(song):
         if not door_state.is_open:
             return
 
+
+def get_random_song():
+    i = int(utime.localtime()[5] / 3)  # dirty, only works with 20 songs
+    return songs.SONGS[i].split(':')[0]

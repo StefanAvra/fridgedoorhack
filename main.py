@@ -31,6 +31,10 @@ if config.ENABLE_LOG:
 
 
 async def play_melody(song_name):
+    if song_name == 'random':
+        song_name = buzzer_music.get_random_song()
+    print('Playing {}...'.format(song_name))
+    loop.create_task(log_door('alarm: {}'.format(song_name), utime.localtime()))
     await buzzer_music.play_song(song_name)
 
 
@@ -46,12 +50,12 @@ async def door_opened():
     led.off()
     await uasyncio.sleep(config.LEGIT_OPEN_TIME)
     # start 'forgot to close'-code if still open
-    if door_state.is_open > 0 and token == opened_counter:
-        print('close the door!!111')
-        loop.create_task(log_door('alarm', utime.localtime()))
-        await play_melody('TopGun')
-        if door_state.is_open > 0:
-            loop.create_task(log_door('alarm', utime.localtime()))
+    # if door_state.is_open > 0 and token == opened_counter:
+    while door_state.is_open > 0 and token == opened_counter:
+        print('Close the door!!111')
+        await play_melody('random')
+        await uasyncio.sleep(3)
+    print('Door has been opened {} times since last reset.\n'.format(opened_counter))
 
 
 async def door_closed():
@@ -61,7 +65,6 @@ async def door_closed():
     if config.ENABLE_LOG:
         loop.create_task(log_door('closed', utime.localtime()))
     led.on()
-    # do logging
 
 
 async def check_door():
@@ -69,7 +72,6 @@ async def check_door():
     global opened_counter
     global loop
     while True:
-        print('Door has been opened {} times since last reset.\nChecking door...'.format(opened_counter))
         await uasyncio.sleep_ms(100)
         if not pin.value() == door_open:
             await uasyncio.sleep_ms(100)  # debouncing
