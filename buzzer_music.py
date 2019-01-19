@@ -28,6 +28,12 @@ async def play_song(song):
             return
 
 
+async def play_completely(song):
+    tune = RTTTL(songs.find(song))
+    for freq, msec in tune.notes():
+        await play_tone(freq, msec)
+
+
 def get_random_song():
     i = int(utime.localtime()[5] / 3)  # dirty, only works with 20 songs
     return songs.SONGS[i].split(':')[0]

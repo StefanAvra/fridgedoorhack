@@ -33,9 +33,17 @@ if config.ENABLE_LOG:
 async def play_melody(song_name):
     if song_name == 'random':
         song_name = buzzer_music.get_random_song()
-    print('Playing {}...'.format(song_name))
-    loop.create_task(log_door('alarm: {}'.format(song_name), utime.localtime()))
+    print('Playing "{}"...'.format(song_name))
+    loop.create_task(log_door('playing: {}'.format(song_name), utime.localtime()))
     await buzzer_music.play_song(song_name)
+
+
+async def play_sfx(song_name):
+    if song_name == 'random':
+        song_name = buzzer_music.get_random_song()
+    print('Playing "{}"...'.format(song_name))
+    loop.create_task(log_door('playing: {}'.format(song_name), utime.localtime()))
+    await buzzer_music.play_completely(song_name)
 
 
 async def door_opened():
@@ -43,7 +51,6 @@ async def door_opened():
     door_state.is_open += 1
     opened_counter += 1
     token = opened_counter
-    # play opening sound
     print('door opened')
     if config.ENABLE_LOG:
         loop.create_task(log_door('opened', utime.localtime()))
@@ -61,7 +68,8 @@ async def door_opened():
 async def door_closed():
     door_state.is_open -= 1
     print('door closed')
-    # play closing sound
+    await uasyncio.sleep_ms(100)
+    await play_sfx('closed')
     if config.ENABLE_LOG:
         loop.create_task(log_door('closed', utime.localtime()))
     led.on()

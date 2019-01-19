@@ -25,7 +25,9 @@ SONGS = [
     'ImperialMarch:d=4,o=5,b=112:8d.,16p,8d.,16p,8d.,16p,8a#4,16p,16f,8d.,16p,8a#4,16p,16f,d.,8p,8a.,16p,8a.,16p,8a.,16p,8a#,16p,16f,8c#.,16p,8a#4,16p,16f,d.,8p,8d.6,16p,8d,16p,16d,8d6,8p,8c#6,16p,16c6,16b,16a#,8b,8p,16d#,16p,8g#,8p,8g,16p,16f#,16f,16e,8f,8p,16a#4,16p,2c#',
     'MissionImp:d=16,o=5,b=95:32d,32d#,32d,32d#,32d,32d#,32d,32d#,32d,32d,32d#,32e,32f,32f#,32g,g,8p,g,8p,a#,p,c6,p,g,8p,g,8p,f,p,f#,p,g,8p,g,8p,a#,p,c6,p,g,8p,g,8p,f,p,f#,p,a#,g,2d,32p,a#,g,2c#,32p,a#,g,2c,a#4,8c,2p,32p,a#4,g4,2f#,32p,a#4,g4,2f,32p,a#4,g4,2e,d#,8d',
     'ItchyScratchy:d=4,o=4,b=160:8c5,8a,p,8c5,8a5,p,8c5,8a,8c5,8a,8c5,8a5,p,8p,8c5,8d5,8e5,8p,8e5,8f5,8g5,p,8d5,8c5,d5,8f5,a#5,a5,c6',
-    '1up:d=16,o=5,b=180:e.6,g.6,e.,c.,d.,g.'
+    '1up:d=16,o=5,b=180:e.6,g.6,e.,c.,d.,g.',
+    'closed:d=32,o=4,b=180:e.,c.,d.,g.'
+
 ]
 
 
