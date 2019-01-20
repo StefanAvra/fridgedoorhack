@@ -10,7 +10,7 @@ partly due to the lack of attention. It's a cheap fridge but otherwise it's doin
 could buy a replacement shelf but that would be less fun (and more expensive).
 
 ### Solution
-*tl;dr:* Check if door is longer open than it should be. If so, attract attention by playing RTTTL melodies.
+*tl;dr:* Check if door is longer open than it should be. If so, attract attention by playing RTTTL melodies. :notes:
 
 I thought it would be nice if the fridge would play some melody if left open. So I added a buzzer to an ESP8266 and coded
 the following project. I used `uasyncio` which is a port of Python's `asyncio` library for asynchronous code to
