@@ -50,6 +50,10 @@ async def door_opened():
     global opened_counter
     door_state.is_open += 1
     opened_counter += 1
+    do_reset = False
+    if opened_counter == config.COUNTER_MAX and config.ONE_UP:
+        await play_sfx('1up')
+        do_reset = True
     token = opened_counter
     print('door opened')
     if config.ENABLE_LOG:
@@ -63,13 +67,17 @@ async def door_opened():
         await play_melody('random')
         await uasyncio.sleep(3)
     print('Door has been opened {} times since last reset.\n'.format(opened_counter))
+    if do_reset:
+        do_reset = False
+        opened_counter = 0
 
 
 async def door_closed():
     door_state.is_open -= 1
     print('door closed')
     await uasyncio.sleep_ms(100)
-    await play_sfx('closed')
+    if config.CLOSING_SOUND:
+        await play_sfx('closed')
     if config.ENABLE_LOG:
         loop.create_task(log_door('closed', utime.localtime()))
     led.on()
