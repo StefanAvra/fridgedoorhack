@@ -46,7 +46,7 @@ Check the [official quick guide](https://docs.micropython.org/en/latest/esp8266/
 ### Installing
 Get a local copy of this project with
 
-```git clone https://github.com/Avraio/fridgedoorhack.git```
+```git clone https://github.com/StefanAvra/fridgedoorhack.git```
 
 Copy the files to the ESP8266. I used [Adafruit's ampy](https://github.com/adafruit/ampy).
 If you have ampy installed you can use the following code to copy all the needed files:
