@@ -72,3 +72,12 @@ CLOSING_SOUND = True  # enable a confirmation sound for closing the door
 ONE_UP = True  # play an achievement sound if the door was opened for COUNTER_MAX times
 COUNTER_MAX = 100  # see above
 ```
+
+## License
+MIT License
+
+Copyright (c) 2019 StefanAvra
+
+
+
+rtttl.py is licensed under the MIT License by https://github.com/dhylands
